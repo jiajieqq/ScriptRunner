@@ -1,4 +1,7 @@
 import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.bc.issue.IssueService
+import com.atlassian.jira.bc.issue.IssueService.IssueResult
+import com.atlassian.jira.bc.issue.IssueService.UpdateValidationResult
 
 // Get some components
 def loggedInUser = ComponentAccessor.jiraAuthenticationContext.loggedInUser
@@ -19,10 +22,9 @@ else{
 issueInputParameters.setDescription(comment.getAuthorFullName() + " - " + comment.getCreated() +"\n"+ commentBody +"\n");
 }
 
-def updateValidationResult = issueService.validateUpdate(loggedInUser, issueId, issueInputParameters)
+UpdateValidationResult validationResult = issueService.validateUpdate(loggedInUser, issueId, issueInputParameters)
+assert validationResult.isValid() : validationResult.getErrorCollection()
+IssueResult updateResult = issueService.update(loggedInUser, validationResult)
+assert updateResult.isValid() : updateResult.getErrorCollection()
 
-assert updateValidationResult.isValid() : updateValidationResult.errorCollection
 
-def issueResult = issueService.update(loggedInUser, updateValidationResult)
-
-assert issueResult.isValid() : issueResult.errorCollection
