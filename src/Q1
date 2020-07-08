@@ -1,0 +1,14 @@
+import com.atlassian.jira.component.ComponentAccessor
+
+def issueManager = ComponentAccessor.issueManager
+def v1 = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName("A") 
+def v2 = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName("B")
+
+// your issue key here
+def issue = issueManager.getIssueByCurrentKey("TESTING-1") 
+
+// convert the value to int
+def i = new Integer((issue.getCustomFieldValue(v1) ?: 0).toString()).intValue()
+def j = new Integer((issue.getCustomFieldValue(v2) ?: 0).toString()).intValue()
+
+return (i ?: 0) + (j ?: 0)
