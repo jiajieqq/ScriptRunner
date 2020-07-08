@@ -15,16 +15,9 @@ def commentBody = event.getComment().getBody()
 
 def issueInputParameters = issueService.newIssueInputParameters()
 
-if(issue.getDescription() != null){
-issueInputParameters.setDescription(issue.getDescription()+"\n"+ comment.getAuthorFullName() + " - " + comment.getCreated() +"\n"+ commentBody +"\n");
-}
-else{
 issueInputParameters.setDescription(comment.getAuthorFullName() + " - " + comment.getCreated() +"\n"+ commentBody +"\n");
-}
 
 UpdateValidationResult validationResult = issueService.validateUpdate(loggedInUser, issueId, issueInputParameters)
 assert validationResult.isValid() : validationResult.getErrorCollection()
 IssueResult updateResult = issueService.update(loggedInUser, validationResult)
 assert updateResult.isValid() : updateResult.getErrorCollection()
-
-
