@@ -4,20 +4,20 @@ import com.atlassian.jira.bc.issue.IssueService.IssueResult
 import com.atlassian.jira.bc.issue.IssueService.UpdateValidationResult
 
 // Get some components
-def loggedInUser = ComponentAccessor.jiraAuthenticationContext.loggedInUser
+def currentUser = ComponentAccessor.jiraAuthenticationContext.loggedInUser
 def issueService = ComponentAccessor.issueService
 
 // Set variables
 def issue = event.issue;
-def issueId = issue.id
+def ID = issue.id
 def comment = event.getComment()
-def commentBody = event.getComment().getBody()
+def Body = event.getComment().getBody()
 
 def issueInputParameters = issueService.newIssueInputParameters()
 
-issueInputParameters.setDescription(comment.getAuthorFullName() + " - " + comment.getCreated() +"\n"+ commentBody +"\n");
+issueInputParameters.setDescription(comment.getAuthorFullName() + " - " + comment.getCreated() +"\n"+ Body +"\n");
 
-UpdateValidationResult validationResult = issueService.validateUpdate(loggedInUser, issueId, issueInputParameters)
+UpdateValidationResult validationResult = issueService.validateUpdate(currentUser, ID, issueInputParameters)
 assert validationResult.isValid() : validationResult.getErrorCollection()
-IssueResult updateResult = issueService.update(loggedInUser, validationResult)
+IssueResult updateResult = issueService.update(currentUser, validationResult)
 assert updateResult.isValid() : updateResult.getErrorCollection()
